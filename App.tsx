@@ -3,13 +3,12 @@ import { StyleSheet, View } from 'react-native';
 import ProductScreen from './src/screen/ProductScreen';
 import ProductDetailScreen from './src/screen/ProductDetailScreen';
 import ShoppingCart from './src/screen/ShoppingCart';
+import Navigation from './src/navigation/Navigation';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <ShoppingCart />
-      {/* <ProductScreen /> */}
-      {/* <ProductDetailScreen /> */}
+      <Navigation />
       <StatusBar style="auto" />
     </View>
   );

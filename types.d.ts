@@ -1,0 +1,3 @@
+interface RootStackParamList {
+    ProductScreen: undefined;
+}
