@@ -1,13 +1,14 @@
 import React from 'react';
 import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
-import products from '../data/products';
+import { useAppSelector } from "../../hooks";
 
 
 const ProductDetailScreen = () => {
     const { width} = useWindowDimensions()
+    const product = useAppSelector((state)=>state.products.selectedProducts)
     /* `const product = products[0]` is assigning the first element of the `products` array to the
     `product` variable. */
-    const product = products[0]
+    // const product = products[0]
   return (
     <View>
         <ScrollView>
