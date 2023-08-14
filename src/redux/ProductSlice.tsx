@@ -2,21 +2,8 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import products from "../data/products";
 import { RootState } from "../../store";
 
-type Product = {
-    id: string;
-    image: string;
-    name: string;
-    price: number;
-    sizes: number[];
-    description: any
-}
 
-type ProductsProps = {
-    products: Product;
-    selectedProducts: null | string
-}
-
-const initialState: ProductsProps = {
+const initialState= {
     products: products,
     selectedProducts: null
 }
