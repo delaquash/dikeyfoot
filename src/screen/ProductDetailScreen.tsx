@@ -1,14 +1,19 @@
 import React from 'react';
 import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
-import { useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { cartSlice } from '../redux/CartSlice';
 
 
 const ProductDetailScreen = () => {
     const { width} = useWindowDimensions()
     const product = useAppSelector((state)=>state.products.selectedProducts)
+    const dispatch = useAppDispatch()
     /* `const product = products[0]` is assigning the first element of the `products` array to the
     `product` variable. */
     // const product = products[0]
+    const addToCart=()=> {
+        dispatch(cartSlice.actions.addCartItem({product}))
+    }
   return (
     <View>
         <ScrollView>
