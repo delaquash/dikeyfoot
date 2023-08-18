@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
-import { useAppDispatch, useAppSelector } from "../../hooks";
-import { cartSlice } from '../redux/CartSlice';
+import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { cartSlice } from '../../redux/CartSlice';
 
 
 const ProductDetailScreen = () => {

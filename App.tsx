@@ -1,26 +1,37 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
-import { Provider } from 'react-redux';
-import Navigation from './src/navigation/Navigation';
-import store from './store';
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import TabNavigator from "./src/navigation/TabNavigation";
+import MovieDetailsScreen from "./src/screen/MovieDetailsScreen";
+import SeatBookingScreen from "./src/screen/SeatBookingScreen";
 
-export default function App() {
+const Stack = createNativeStackNavigator();
+
+const App = () => {
   return (
-    <Provider store={store}>
-      <View style={styles.container}>
-          <Navigation />
-          <StatusBar style="auto" />
-      </View>
-    </Provider>
-   
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen 
+          name="Tab" 
+          component={TabNavigator}
+          options={{ animation: "default"}} 
+        />
+        <Stack.Screen 
+          name="Movie Details" 
+          component={MovieDetailsScreen} 
+          options={{ animation: "slide_from_right"}}
+        />
+        <Stack.Screen 
+          name="Seat Booking" 
+          component={SeatBookingScreen} 
+          options={{ animation: "slide_from_bottom"}}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-  }
-});
+export default App;
+
+const styles = StyleSheet.create({});

@@ -1,11 +1,11 @@
 import { FontAwesome5 } from "@expo/vector-icons";
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from 'react';
 import { Pressable, Text } from 'react-native';
-import ProductDetailScreen from '../screen/ProductDetailScreen';
 import ProductScreen from '../screen/ProductScreen';
 import ShoppingCart from '../screen/ShoppingCart';
+import ProductDetailScreen from '../screen/old_files/ProductDetailScreen';
 
 
 const Stack = createNativeStackNavigator();
