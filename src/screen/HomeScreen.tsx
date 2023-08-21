@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { COLORS, SPACING } from '../../theme/theme';
 // import { baseImagePath, nowPlayingMovies, popularMovies, upcomingMovies } from '../api/apicalls';
@@ -6,10 +6,39 @@ import { Dimensions } from 'react-native';
 import { ScrollView } from 'react-native';
 import { StatusBar } from 'react-native';
 import InputHeader from '../components/InputHeader';
+import axios from 'axios';
+import { nowPlayingMovies, popularMovies, upcomingMovies, baseImagePath } from '../api/apicalls';
 
 const { height, width } = Dimensions.get("window")
 const getNowPlayingList = async () => {
-  const res = 
+    try {
+      let res = await axios.get(nowPlayingMovies);
+      let data = await res.data;
+      return data;
+    } catch (error) {
+      console.error("Something went wrong in getNowPlayingList Function", error)
+    }
+}
+
+const getUpcomingPlayingList = async () => {
+  try {
+    let res = await axios.get(upcomingMovies);
+    let data = await res.data;
+    return data;
+  } catch (error) {
+    console.error("Something went wrong in getUpcomingPlayingList Function", error)
+  }
+}
+
+const getPopularMoviesList = async () => {
+  try {
+    let response = await axios.get(popularMovies);
+    let json = await response.data
+    return json;
+    // return data;
+  } catch (error) {
+    console.error("Something went wrong in getPopularMoviesList Function", error)
+  }
 }
 
 const HomeScreen = ({navigation}: any) => {
@@ -17,7 +46,24 @@ const HomeScreen = ({navigation}: any) => {
   const [popularMovies, setPopularMovies] = useState<any>(undefined);
   const [upComingMoviesList, setUpComingMoviesList] = useState<any>(undefined)
 
-  const searchMoviesFuction ={}
+  useEffect(() => {
+    (async()=> {
+      let tempNowPlaying = await getNowPlayingList();
+      setNowPlayingMovieList({...tempNowPlaying});
+
+      let tempPopular = await getPopularMoviesList();
+      setUpComingMoviesList({...tempPopular});
+
+      let tempUpcoming = await getUpcomingPlayingList();
+      setUpComingMoviesList({...tempUpcoming})
+    })()
+  }, [])
+
+  // console.log(nowPlayingMovieList, getUpcomingPlayingList, getPopularMoviesList)
+  
+  const searchMoviesFuction =()=> {
+    navigation.navigate("Search")
+  }
   if(nowPlayingMovieList == undefined &&
     nowPlayingMovieList == null &&
     popularMovies == undefined &&
