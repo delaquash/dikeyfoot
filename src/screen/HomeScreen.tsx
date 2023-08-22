@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { COLORS, SPACING } from '../../theme/theme';
 // import { baseImagePath, nowPlayingMovies, popularMovies, upcomingMovies } from '../api/apicalls';
-import { Dimensions } from 'react-native';
-import { ScrollView } from 'react-native';
-import { StatusBar } from 'react-native';
-import InputHeader from '../components/InputHeader';
 import axios from 'axios';
-import { nowPlayingMovies, popularMovies, upcomingMovies, baseImagePath } from '../api/apicalls';
+import { Dimensions, ScrollView, StatusBar } from 'react-native';
+import { nowPlayingMovies, popularMovies, upcomingMovies } from '../api/apicalls';
+import CategoryHeader from '../components/Categoryheader';
+import InputHeader from '../components/InputHeader';
+import SubMovieCard from '../components/SubMovieCard';
 
 const { height, width } = Dimensions.get("window")
 const getNowPlayingList = async () => {
@@ -49,13 +49,13 @@ const HomeScreen = ({navigation}: any) => {
   useEffect(() => {
     (async()=> {
       let tempNowPlaying = await getNowPlayingList();
-      setNowPlayingMovieList({...tempNowPlaying});
+      setNowPlayingMovieList(tempNowPlaying.results);
 
       let tempPopular = await getPopularMoviesList();
-      setUpComingMoviesList({...tempPopular});
+      setPopularMovies(tempPopular.results);
 
       let tempUpcoming = await getUpcomingPlayingList();
-      setUpComingMoviesList({...tempUpcoming})
+      setUpComingMoviesList(tempUpcoming.results)
     })()
   }, [])
 
@@ -95,9 +95,20 @@ const HomeScreen = ({navigation}: any) => {
         <View style={styles.inputContainerHeader}>
           <InputHeader />
         </View>
-        {/* <View style={styles.activityIndicator}>
-          <ActivityIndicator size={"large"} color={COLORS.Orange} />
-        </View> */}
+        <CategoryHeader title={'Now Playing'} />
+        <CategoryHeader title={'Upcoming'} />
+        <CategoryHeader title={'Popular'} />
+        <FlatList
+          keyExtractor={(item:any)=>item.id}
+          contentContainerStyle={styles.containerGap}
+          data={upComingMoviesList}
+          renderItem={({item, index})=>
+            <SubMovieCard 
+              title={item.original_title}
+            /> 
+          }
+          horizontal
+        />
     </ScrollView>
   )
 }
@@ -120,5 +131,9 @@ const styles = StyleSheet.create({
   inputContainerHeader: {
     marginHorizontal: SPACING.space_36,
     marginTop: SPACING.space_28
+  },
+  containerGap: {
+    gap: SPACING.space_36,
+    color: "white"
   }
 })

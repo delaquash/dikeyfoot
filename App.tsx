@@ -23,7 +23,7 @@ const App = () => {
     "poppins_light":require("./src/assets/Fonts/Poppins-Light.ttf"),
     "poppins_medium":require("./src/assets/Fonts/Poppins-Medium.ttf"),
     "Poppins-Regular":require("./src/assets/Fonts/Poppins-Regular.ttf"),
-    "poppins_semibold":require("./src/assets/Fonts/Poppins-SemiBold.ttf"),
+    "Poppins_Semibold":require("./src/assets/Fonts/Poppins-SemiBold.ttf"),
     "poppins_thin":require("./src/assets/Fonts/Poppins-Thin.ttf"),
   });
   const onLayoutRootView = useCallback(async () => {
