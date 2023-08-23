@@ -50,7 +50,11 @@ const HomeScreen = ({navigation}: any) => {
   useEffect(() => {
     (async()=> {
       let tempNowPlaying = await getNowPlayingList();
-      setNowPlayingMovieList(tempNowPlaying.results);
+      setNowPlayingMovieList(
+        {id: 'dummy1'},
+        ...tempNowPlaying.results,
+        {id: 'dummy2'},
+      );
 
       let tempPopular = await getPopularMoviesList();
       setPopularMovies(tempPopular.results);
@@ -114,7 +118,7 @@ const HomeScreen = ({navigation}: any) => {
               isFirst= {index == 0 ? true : false}
               isLast ={index == upcomingMovies?.length - 1 ? true : false }
               title={item.original_title}
-              imagePath={baseImagePath("w780", item.poster_path)}
+              imagePath={baseImagePath("w", item.poster_path)}
               genre={item.genre_ids.slice(1, 4)}
               vote_average={item.vote_average}
               vote_count={item.vote_count}
@@ -151,7 +155,7 @@ const HomeScreen = ({navigation}: any) => {
           contentContainerStyle={styles.containerGap}
           data={upComingMoviesList}
           renderItem={({item, index})=>
-            <SubMovieCard
+          <SubMovieCard
               shouldMarginatedAtEnd={true}
               cardFunction={()=> (
                 navigation.push("Movie Details", {movieid: item.id})
@@ -161,7 +165,7 @@ const HomeScreen = ({navigation}: any) => {
               isLast ={index == upcomingMovies?.length - 1 ? true : false }
               title={item.original_title}
               imagePath={baseImagePath("w342", item.poster_path)}
-            /> 
+          /> 
           }
           
         />
