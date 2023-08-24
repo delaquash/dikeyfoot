@@ -1,199 +1,225 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { COLORS, SPACING } from '../../theme/theme';
-// import { baseImagePath, nowPlayingMovies, popularMovies, upcomingMovies } from '../api/apicalls';
-import axios from 'axios';
 import { Dimensions, ScrollView, StatusBar } from 'react-native';
-import { baseImagePath, nowPlayingMovies, popularMovies, upcomingMovies } from '../api/apicalls';
+import {
+  upcomingMovies,
+  nowPlayingMovies,
+  popularMovies,
+  baseImagePath,
+} from '../api/apicalls';
 import CategoryHeader from '../components/Categoryheader';
 import InputHeader from '../components/InputHeader';
 import SubMovieCard from '../components/SubMovieCard';
 import MovieCard from '../components/MovieCard';
 
-const { height, width } = Dimensions.get("window")
-const getNowPlayingList = async () => {
-    try {
-      let res = await axios.get(nowPlayingMovies);
-      let data = await res.data;
-      return data;
-    } catch (error) {
-      console.error("Something went wrong in getNowPlayingList Function", error)
-    }
-}
+const {width, height} = Dimensions.get('window');
 
-const getUpcomingPlayingList = async () => {
+const getNowPlayingMoviesList = async () => {
   try {
-    let res = await axios.get(upcomingMovies);
-    let data = await res.data;
-    return data;
+    let response = await fetch(nowPlayingMovies);
+    let json = await response.json();
+    return json;
   } catch (error) {
-    console.error("Something went wrong in getUpcomingPlayingList Function", error)
+    console.error(
+      ' Something went wrong in getNowPlayingMoviesList Function',
+      error,
+    );
   }
-}
+};
+
+const getUpcomingMoviesList = async () => {
+  try {
+    let response = await fetch(upcomingMovies);
+    let json = await response.json();
+    return json;
+  } catch (error) {
+    console.error(
+      ' Something went wrong in getUpcomingMoviesList Function',
+      error,
+    );
+  }
+};
 
 const getPopularMoviesList = async () => {
   try {
-    let response = await axios.get(popularMovies);
-    let json = await response.data
+    let response = await fetch(popularMovies);
+    let json = await response.json();
     return json;
-    // return data;
   } catch (error) {
-    console.error("Something went wrong in getPopularMoviesList Function", error)
+    console.error(
+      ' Something went wrong in getPopularMoviesList Function',
+      error,
+    );
   }
-}
+};
 
 const HomeScreen = ({navigation}: any) => {
-  const [nowPlayingMovieList, setNowPlayingMovieList] = useState<any>(undefined);
-  const [popularMovies, setPopularMovies] = useState<any>(undefined);
-  const [upComingMoviesList, setUpComingMoviesList] = useState<any>(undefined)
+  const [nowPlayingMoviesList, setNowPlayingMoviesList] =
+    useState<any>(undefined);
+  const [popularMoviesList, setPopularMoviesList] = useState<any>(undefined);
+  const [upcomingMoviesList, setUpcomingMoviesList] = useState<any>(undefined);
 
   useEffect(() => {
-    (async()=> {
-      let tempNowPlaying = await getNowPlayingList();
-      setNowPlayingMovieList(
+    (async () => {
+      let tempNowPlaying = await getNowPlayingMoviesList();
+      setNowPlayingMoviesList([
         {id: 'dummy1'},
         ...tempNowPlaying.results,
         {id: 'dummy2'},
-      );
+      ]);
 
       let tempPopular = await getPopularMoviesList();
-      setPopularMovies(tempPopular.results);
+      setPopularMoviesList(tempPopular.results);
 
-      let tempUpcoming = await getUpcomingPlayingList();
-      setUpComingMoviesList(tempUpcoming.results)
-    })()
-  }, [])
+      let tempUpcoming = await getUpcomingMoviesList();
+      setUpcomingMoviesList(tempUpcoming.results);
+    })();
+  }, []);
 
-  // console.log(nowPlayingMovieList, getUpcomingPlayingList, getPopularMoviesList)
-  
-  const searchMoviesFuction =()=> {
-    navigation.navigate("Search")
-  }
-  if(nowPlayingMovieList == undefined &&
-    nowPlayingMovieList == null &&
-    popularMovies == undefined &&
-    popularMovies == null &&
-    upComingMoviesList == undefined && 
-    upComingMoviesList == null
-    ){
-      return (
-        <ScrollView 
-          bounces={false}
-          style={styles.container}
-          contentContainerStyle={styles.scrollView}
-        >
-        <StatusBar hidden/>
-          <View style={styles.inputContainerHeader}>
-            <InputHeader searchFunction={searchMoviesFuction} />
-          </View>
-          
-      </ScrollView>
-      )
-    }
-  return (
-    <ScrollView 
-      bounces={false}
-      style={styles.container}
-      contentContainerStyle={styles.scrollView}
-    >
-      <StatusBar hidden/>
-        <View style={styles.inputContainerHeader}>
-          <InputHeader />
+  const searchMoviesFunction = () => {
+    navigation.navigate('Search');
+  };
+
+  if (
+    nowPlayingMoviesList == undefined &&
+    nowPlayingMoviesList == null &&
+    popularMoviesList == undefined &&
+    popularMoviesList == null &&
+    upcomingMoviesList == undefined &&
+    upcomingMoviesList == null
+  ) {
+    return (
+      <ScrollView
+        style={styles.container}
+        bounces={false}
+        contentContainerStyle={styles.scrollViewContainer}>
+        <StatusBar hidden />
+
+        <View style={styles.InputHeaderContainer}>
+          <InputHeader searchFunction={searchMoviesFunction} />
         </View>
-        <CategoryHeader 
-          title={'Now Playing'} 
-        />
-        <FlatList
-          horizontal
-          keyExtractor={(item:any)=>item.id}
-          contentContainerStyle={styles.containerGap}
-          data={nowPlayingMovieList}
-          renderItem={({item, index})=>
+
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size={'large'} color={COLORS.Orange} />
+        </View>
+      </ScrollView>
+    );
+  }
+
+  return (
+    <ScrollView style={styles.container} bounces={false}>
+      <StatusBar hidden />
+
+      <View style={styles.InputHeaderContainer}>
+        <InputHeader searchFunction={searchMoviesFunction} />
+      </View>
+
+      <CategoryHeader title={'Now Playing'} />
+      <FlatList
+        data={nowPlayingMoviesList}
+        keyExtractor={(item: any) => item.id}
+        bounces={false}
+        snapToInterval={width * 0.7 + SPACING.space_36}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        decelerationRate={0}
+        contentContainerStyle={styles.containerGap36}
+        renderItem={({item, index}) => {
+          if (!item.original_title) {
+            return (
+              <View
+                style={{
+                  width: (width - (width * 0.7 + SPACING.space_36 * 2)) / 2,
+                }}></View>
+            );
+          }
+          return (
             <MovieCard
-              shouldMarginatedAtEnd={true}
-              cardFunction={()=> (
-                navigation.push("Movie Details", {movieid: item.id})
-              )}
-              cardWidth= {width * 0.7 }
-              isFirst= {index == 0 ? true : false}
-              isLast ={index == upcomingMovies?.length - 1 ? true : false }
+              shoudlMarginatedAtEnd={true}
+              cardFunction={() => {
+                navigation.push('Movie Details', {movieid: item.id});
+              }}
+              cardWidth={width * 0.7}
+              isFirst={index == 0 ? true : false}
+              isLast={index == upcomingMoviesList?.length - 1 ? true : false}
               title={item.original_title}
-              imagePath={baseImagePath("w", item.poster_path)}
+              imagePath={baseImagePath('w780', item.poster_path)}
               genre={item.genre_ids.slice(1, 4)}
               vote_average={item.vote_average}
               vote_count={item.vote_count}
-            /> 
-          }
-        />
-        <CategoryHeader 
-          title={'Upcoming'} 
-        />
-        <FlatList
-          horizontal
-          keyExtractor={(item:any)=>item.id}
-          contentContainerStyle={styles.containerGap}
-          data={popularMovies}
-          renderItem={({item, index})=>
-            <SubMovieCard
-              shouldMarginatedAtEnd={true}
-              cardFunction={()=> (
-                navigation.push("Movie Details", {movieid: item.id})
-              )}
-              cardWidth= {width / 3 }
-              isFirst= {index == 0 ? true : false}
-              isLast ={index == upcomingMovies?.length - 1 ? true : false }
-              title={item.original_title}
-              imagePath={baseImagePath("w342", item.poster_path)}
-            /> 
-          }
-          
-        />
-        <CategoryHeader title={'Popular'} />
-        <FlatList
-          horizontal
-          keyExtractor={(item:any)=>item.id}
-          contentContainerStyle={styles.containerGap}
-          data={upComingMoviesList}
-          renderItem={({item, index})=>
+            />
+          );
+        }}
+      />
+      <CategoryHeader title={'Popular'} />
+      <FlatList
+        data={popularMoviesList}
+        keyExtractor={(item: any) => item.id}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        bounces={false}
+        contentContainerStyle={styles.containerGap36}
+        renderItem={({item, index}) => (
           <SubMovieCard
-              shouldMarginatedAtEnd={true}
-              cardFunction={()=> (
-                navigation.push("Movie Details", {movieid: item.id})
-              )}
-              cardWidth= {width / 3 }
-              isFirst= {index == 0 ? true : false}
-              isLast ={index == upcomingMovies?.length - 1 ? true : false }
-              title={item.original_title}
-              imagePath={baseImagePath("w342", item.poster_path)}
-          /> 
-          }
-          
-        />
+            shoudlMarginatedAtEnd={true}
+            cardFunction={() => {
+              navigation.push('Movie Details', {movieid: item.id});
+            }}
+            cardWidth={width / 3}
+            isFirst={index == 0 ? true : false}
+            isLast={index == upcomingMoviesList?.length - 1 ? true : false}
+            title={item.original_title}
+            imagePath={baseImagePath('w342', item.poster_path)}
+          />
+        )}
+      />
+      <CategoryHeader title={'Upcoming'} />
+      <FlatList
+        data={upcomingMoviesList}
+        keyExtractor={(item: any) => item.id}
+        horizontal
+        bounces={false}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.containerGap36}
+        renderItem={({item, index}) => (
+          <SubMovieCard
+            shoudlMarginatedAtEnd={true}
+            cardFunction={() => {
+              navigation.push('Movie Details', {movieid: item.id});
+            }}
+            cardWidth={width / 3}
+            isFirst={index == 0 ? true : false}
+            isLast={index == upcomingMoviesList?.length - 1 ? true : false}
+            title={item.original_title}
+            imagePath={baseImagePath('w342', item.poster_path)}
+          />
+        )}
+      />
     </ScrollView>
-  )
-}
-
-export default HomeScreen
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    backgroundColor: COLORS.Black
-  }, 
-  scrollView: {
-    flex: 1
-  }, 
-  activityIndicator:{
+    display: 'flex',
+    backgroundColor: COLORS.Black,
+  },
+  scrollViewContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignSelf: "center",
   },
-  inputContainerHeader: {
+  loadingContainer: {
+    flex: 1,
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  InputHeaderContainer: {
     marginHorizontal: SPACING.space_36,
-    marginTop: SPACING.space_28
+    marginTop: SPACING.space_28,
   },
-  containerGap: {
+  containerGap36: {
     gap: SPACING.space_36,
-    color: "white"
-  }
-})
+  },
+});
+
+export default HomeScreen;
