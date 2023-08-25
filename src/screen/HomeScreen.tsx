@@ -63,6 +63,10 @@ const HomeScreen = ({navigation}: any) => {
   useEffect(() => {
     (async () => {
       let tempNowPlaying = await getNowPlayingMoviesList();
+     /* The `setNowPlayingMoviesList` function is used to update the state variable
+     `nowPlayingMoviesList` with a new value. In this case, it is updating the state with an array
+     that includes a dummy object with `id: 'dummy1'`, followed by the `results` array from the
+     `tempNowPlaying` object, and finally another dummy object with `id: 'dummy2'`. */
       setNowPlayingMoviesList([
         {id: 'dummy1'},
         ...tempNowPlaying.results,
@@ -131,7 +135,8 @@ const HomeScreen = ({navigation}: any) => {
               <View
                 style={{
                   width: (width - (width * 0.7 + SPACING.space_36 * 2)) / 2,
-                }}></View>
+                }}>
+              </View>
             );
           }
           return (
