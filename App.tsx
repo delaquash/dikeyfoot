@@ -16,15 +16,15 @@ const Stack = createNativeStackNavigator();
 const App = () => {
   const [fontsLoaded, fontError] = useFonts({
     // 'Inter-Black': require('./assets/fonts/Inter-Black.otf',
-    'poppins_black': require("./src/assets/Fonts/Poppins-Black.ttf"),
-    "poppins_bold": require("./src/assets/Fonts/Poppins-Bold.ttf"),
-    "poppins_extrabold":require("./src/assets/Fonts/Poppins-ExtraBold.ttf"),
-    "poppins_extralight":require("./src/assets/Fonts/Poppins-ExtraLight.ttf"),
-    "poppins_light":require("./src/assets/Fonts/Poppins-Light.ttf"),
-    "poppins_medium":require("./src/assets/Fonts/Poppins-Medium.ttf"),
+    'Poppins_Black': require("./src/assets/Fonts/Poppins-Black.ttf"),
+    "Poppins_Bold": require("./src/assets/Fonts/Poppins-Bold.ttf"),
+    "Poppins_Extrabold":require("./src/assets/Fonts/Poppins-ExtraBold.ttf"),
+    "Poppins_Extralight":require("./src/assets/Fonts/Poppins-ExtraLight.ttf"),
+    "Poppins_Light":require("./src/assets/Fonts/Poppins-Light.ttf"),
+    "Poppins_Medium":require("./src/assets/Fonts/Poppins-Medium.ttf"),
     "Poppins-Regular":require("./src/assets/Fonts/Poppins-Regular.ttf"),
     "Poppins_Semibold":require("./src/assets/Fonts/Poppins-SemiBold.ttf"),
-    "poppins_thin":require("./src/assets/Fonts/Poppins-Thin.ttf"),
+    "Poppins_Thin":require("./src/assets/Fonts/Poppins-Thin.ttf"),
   });
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
