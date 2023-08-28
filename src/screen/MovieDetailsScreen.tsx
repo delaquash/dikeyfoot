@@ -24,6 +24,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import CustomIcon from '../components/CustomIcon';
 import CategoryHeader from '../components/Categoryheader';
 import CastCard from '../components/CastCard';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const getMovieDetails = async (movieid: number) => {
   try {
@@ -146,7 +147,7 @@ const MovieDetailsScreen = ({ navigation, route }: any) => {
 
       <View style={styles.infoContainer}>
         <View style={styles.rateContainer}>
-          <CustomIcon name="star" style={styles.starIcon} />
+          <Ionicons name="star" style={styles.starIcon} />
           <Text style={styles.runtimeText}>
             {movieData?.vote_average.toFixed(1)} ({movieData?.vote_count})
           </Text>
@@ -185,7 +186,7 @@ const MovieDetailsScreen = ({ navigation, route }: any) => {
           <TouchableOpacity
             style={styles.buttonBG}
             onPress={() => {
-              navigation.push('SeatBooking', {
+              navigation.push('Seat Booking', {
                 BgImage: baseImagePath('w780', movieData.backdrop_path),
                 PosterImage: baseImagePath('original', movieData.poster_path),
               });
@@ -246,12 +247,12 @@ const styles = StyleSheet.create({
   },
   runtimeText: {
     fontFamily: "Times New Roman",
-    fontSize: FONTSIZE.size_14,
+    fontSize: FONTSIZE.size_20,
     color: COLORS.White,
   },
   title: {
     fontFamily: "Times New Roman",
-    fontSize: FONTSIZE.size_24,
+    fontSize: FONTSIZE.size_30,
     color: COLORS.White,
     marginHorizontal: SPACING.space_36,
     marginVertical: SPACING.space_15,
@@ -299,7 +300,7 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     fontFamily: "Times New Roman",
-    fontSize: FONTSIZE.size_14,
+    fontSize: FONTSIZE.size_18,
     color: COLORS.White,
   },
   containerGap24: {
