@@ -7,6 +7,7 @@ import AppHeader from '../components/AppHeaser';
 import { TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomIcon from '../components/CustomIcon';
+import { FlatList } from 'react-native';
 
 const timeArray: string[] = [
   '10:30',
@@ -144,7 +145,70 @@ const SeatBookingScreen = ({navigation, route}: any) => {
           )
         })}
       </View>
-    </View>
+
+
+      <View style={styles.seatRadioContainer}>
+          <View style={styles.radioContainer}>
+            <Ionicons name="radio" style={styles.radioIcon} />
+            <Text style={styles.radioText}>Available</Text>
+          </View>
+          <View style={styles.radioContainer}>
+            <Ionicons
+              name="radio"
+              style={[styles.radioIcon, {color: COLORS.Grey}]}
+            />
+            <Text style={styles.radioText}>Taken</Text>
+          </View>
+          <View style={styles.radioContainer}>
+            <Ionicons
+              name="radio"
+              style={[styles.radioIcon, {color: COLORS.Orange}]}
+            />
+            <Text style={styles.radioText}>Selected</Text>
+          </View>
+        </View>
+      </View>
+
+      <View>
+        <FlatList 
+          keyExtractor={(item)=> item.date}
+          data={dateArray}
+          horizontal
+          contentContainerStyle={styles.containerGap20}
+          renderItem={({item, index})=> {
+            return (
+              <TouchableOpacity onPress={()=>setSelectedDateIndex(index)}>
+                  <View style={[
+                    styles.dateContainer,
+                    index == 0
+                      ? {marginLeft: SPACING.space_24}
+                      : index == dateArray.length - 1
+                      ? {marginRight: SPACING.space_24}
+                      : {},
+                    index == selectedDateIndex
+                      ? {backgroundColor: COLORS.Orange}
+                      : {},
+                  ]}>
+
+                  </View>
+                  <Text style={styles.dateText}>{item.date}</Text>
+                  <Text style={styles.dayText}>{item.day}</Text>
+              </TouchableOpacity>
+            )
+          }}
+        />
+      </View>
+      <View style={styles.buttonPriceContainer}>
+        <View style={styles.priceContainer}>
+          <Text style={styles.totalPriceText}>Total Price</Text>
+          <Text style={styles.price}>$ {price}.00</Text>
+        </View>
+        <TouchableOpacity 
+          // onPress={BookSeats}
+        >
+          <Text style={styles.buttonText}>Buy Tickets</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   )
 }
