@@ -1,6 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native';
 import React, { useState } from 'react';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../../theme/theme';
+import { StatusBar } from 'expo-status-bar';
+import { LinearGradient } from "expo-linear-gradient";
+import AppHeader from '../components/AppHeaser';
+import { TouchableOpacity } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import CustomIcon from '../components/CustomIcon';
 
 const timeArray: string[] = [
   '10:30',
@@ -11,17 +17,14 @@ const timeArray: string[] = [
   '21:00',
 ];
 
-const generateDate = ():string[] => {
+const generateDate = () => {
   const date = new Date();
   let weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   let weekdays = [];
 
+  /* The code block is generating an array of dates for the next 7 days starting from the current date. */
   for(let i=0; i<7; i++){
     let tempDate = {
-      /* The code `date: new Date(date.getTime() + i * 24 * 60 * 60 * 1000).getDate()` is creating a
-      new Date object by adding `i` days to the current date (`date.getTime()` returns the current
-      date in milliseconds). The `getDate()` method is then called on the new Date object to get the
-      day of the month. */
       date: new Date(date.getTime() + i * 24 * 60 * 60 * 1000).getDate(),
       day: weekday[new Date(date.getTime() + i * 24 * 60 * 60 * 1000).getDay()],
     }
@@ -30,17 +33,119 @@ const generateDate = ():string[] => {
   return weekdays;
 }
 
+const generateSeat = () => {
+  let numRow = 8;
+  let numColumn = 3;
+  let rowArray = [];
+  let start = 1;
+  let reachNine = false;
+
+  for(let i = 0; i < numRow; i++){
+    let columnArray = [];
+    for(let j = 0; j < numColumn; j++) {
+      let seatObject = {
+        number: start,
+        taken: Boolean(Math.round(Math.random())),
+        selected: false
+      };
+      columnArray.push(seatObject);
+      start++
+    }
+    if(i == 3) {
+      numColumn += 2
+    }
+    if(numColumn < 9 && !reachNine) {
+      numColumn += 2
+    } else {
+      reachNine = true;
+      numColumn -= 2 
+    }
+    rowArray.push(columnArray);
+  }
+  return rowArray;
+}
+
 const SeatBookingScreen = ({navigation, route}: any) => {
   const [dateArray, setDateArray] = useState<any[]>(generateDate());
   const [selectedDateIndex, setSelectedDateIndex] = useState<any>();
   const [price, setPrice] = useState<number>(0);
-  // const [twoDSeatArray, setTwoDSeatArray] = useState<any[][]>(generateSeats());
+  const [twoDSeatArray, setTwoDSeatArray] = useState<any[][]>(generateSeat());
   const [selectedSeatArray, setSelectedSeatArray] = useState([]);
   const [selectedTimeIndex, setSelectedTimeIndex] = useState<any>();
+
+  const selectedSeat =(index: number, subIndex: number, num: number) =>{
+    if (!twoDSeatArray[index][subIndex].taken) {
+      let array: any = [...selectedSeatArray];
+      let temp = [...twoDSeatArray];
+      temp[index][subIndex].selected = !temp[index][subIndex].selected;
+      if(!array.includes(num)) {
+        array.push(num);
+        setSelectedSeatArray(array)
+      } else {
+        const tempIndex = array.indexOf(num);
+        if(tempIndex > -1){
+          array.splice(tempIndex, 1);
+          setSelectedSeatArray(array)
+        }
+      }
+      setPrice(array.length * 5.0);
+      setTwoDSeatArray(temp);
+    }
+  }
   return (
+    <ScrollView
+      style={styles.container}
+      bounces={false}
+      showsVerticalScrollIndicator={false}
+    >
+      <StatusBar hidden />
     <View>
-      <Text>SeatBookingScreen</Text>
+      <ImageBackground
+        source={{ uri: route.params?.BGImage}}
+        style={styles.ImageBG}
+      >
+        <LinearGradient
+            colors={[COLORS.BlackRGB10, COLORS.Black]}
+            style={styles.linearGradient}>
+            <View style={styles.appHeaderContainer}>
+              <AppHeader
+                name="close"
+                header={''}
+                action={() => navigation.goBack()}
+              />
+            </View>
+          </LinearGradient>
+        </ImageBackground>
+        <Text style={styles.screenText}>Screen this side</Text>
     </View>
+    <View style={styles.seatContainer}>
+      <View style={styles.containerGap20}>
+        {twoDSeatArray?.map((item, index)=> {
+          return (
+            <View style={styles.seatRow} key={index}>
+              {item?.map((subItem, subIndex)=> {
+                return (
+                  <TouchableOpacity onPress={(()=>{
+                    selectedSeat(index, subIndex, subItem.number)})}
+                    key={subItem.number}
+                  >
+                      <Ionicons
+                        name="hand-left-outline"
+                        style={[
+                          styles.seatIcon,
+                          subItem.taken ? {color: COLORS.Grey }:{},
+                          subItem.selected ? {color: COLORS.Orange }:{},
+                        ]}
+                      />
+                  </TouchableOpacity>
+                )
+              })}
+            </View>
+          )
+        })}
+      </View>
+    </View>
+    </ScrollView>
   )
 }
 
@@ -65,7 +170,7 @@ const styles = StyleSheet.create({
   },
   screenText: {
     textAlign: 'center',
-    fontFamily: FONTFAMILY.poppins_regular,
+    // fontFamily: FONTFAMILY.poppins_regular,
     fontSize: FONTSIZE.size_10,
     color: COLORS.WhiteRGBA15,
   },
@@ -101,7 +206,7 @@ const styles = StyleSheet.create({
     color: COLORS.White,
   },
   radioText: {
-    fontFamily: FONTFAMILY.poppins_medium,
+    // fontFamily: FONTFAMILY.poppins_medium,
     fontSize: FONTSIZE.size_12,
     color: COLORS.White,
   },
@@ -117,12 +222,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dateText: {
-    fontFamily: FONTFAMILY.poppins_medium,
+    // fontFamily: FONTFAMILY.poppins_medium,
     fontSize: FONTSIZE.size_24,
     color: COLORS.White,
   },
   dayText: {
-    fontFamily: FONTFAMILY.poppins_regular,
+    // fontFamily: FONTFAMILY.poppins_regular,
     fontSize: FONTSIZE.size_12,
     color: COLORS.White,
   },
@@ -140,7 +245,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   timeText: {
-    fontFamily: FONTFAMILY.poppins_regular,
+    // fontFamily: FONTFAMILY.poppins_regular,
     fontSize: FONTSIZE.size_14,
     color: COLORS.White,
   },
@@ -155,12 +260,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   totalPriceText: {
-    fontFamily: FONTFAMILY.poppins_regular,
+    // fontFamily: FONTFAMILY.poppins_regular,
     fontSize: FONTSIZE.size_14,
     color: COLORS.Grey,
   },
   price: {
-    fontFamily: FONTFAMILY.poppins_medium,
+    // fontFamily: FONTFAMILY.poppins_medium,
     fontSize: FONTSIZE.size_24,
     color: COLORS.White,
   },
@@ -168,7 +273,7 @@ const styles = StyleSheet.create({
     borderRadius: BORDERRADIUS.radius_25,
     paddingHorizontal: SPACING.space_24,
     paddingVertical: SPACING.space_10,
-    fontFamily: FONTFAMILY.poppins_semibold,
+    // fontFamily: FONTFAMILY.poppins_semibold,
     fontSize: FONTSIZE.size_16,
     color: COLORS.White,
     backgroundColor: COLORS.Orange,
