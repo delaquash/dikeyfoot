@@ -79,7 +79,7 @@ const MovieDetailsScreen = ({ navigation, route }: any) => {
         showsVerticalScrollIndicator={false}>
         <View style={styles.appHeaderContainer}>
           <AppHeader
-            name="close"
+            name="arrow-back-outline"
             header={''}
             action={() => navigation.goBack()}
           />
@@ -109,7 +109,7 @@ const MovieDetailsScreen = ({ navigation, route }: any) => {
             style={styles.linearGradient}>
             <View style={styles.appHeaderContainer}>
               <AppHeader
-                name="close"
+                name="arrow-back-outline"
                 header={''}
                 action={() => navigation.goBack()}
               />
@@ -124,7 +124,7 @@ const MovieDetailsScreen = ({ navigation, route }: any) => {
       </View>
 
       <View style={styles.timeContainer}>
-        <CustomIcon name="clock" style={styles.clockIcon} />
+        <Ionicons name="alarm-outline" style={styles.clockIcon} />
         <Text style={styles.runtimeText}>
           {Math.floor(movieData?.runtime / 60)}h{' '}
           {Math.floor(movieData?.runtime % 60)}m

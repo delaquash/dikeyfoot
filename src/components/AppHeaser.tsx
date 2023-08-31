@@ -1,13 +1,14 @@
 import * as React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import CustomIcon from './CustomIcon';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../../theme/theme';
 
 const AppHeader = (props: any) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.iconBG} onPress={() => props.action()}>
-        <CustomIcon name={props.name} style={styles.iconStyle} />
+        <Ionicons name={props.name} style={styles.iconStyle} />
       </TouchableOpacity>
       <Text style={styles.headerText}>{props.header}</Text>
       <View style={styles.emptyContainer}></View>

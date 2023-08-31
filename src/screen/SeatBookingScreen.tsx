@@ -1,4 +1,4 @@
-import { ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, Text, View,ToastAndroid } from 'react-native';
 import React, { useState } from 'react';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../../theme/theme';
 import { StatusBar } from 'expo-status-bar';
@@ -8,6 +8,7 @@ import { TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomIcon from '../components/CustomIcon';
 import { FlatList } from 'react-native';
+// import EncryptedStorage from "react-native-encrypted-storage"
 
 const timeArray: string[] = [
   '10:30',
@@ -74,6 +75,43 @@ const SeatBookingScreen = ({navigation, route}: any) => {
   const [selectedSeatArray, setSelectedSeatArray] = useState([]);
   const [selectedTimeIndex, setSelectedTimeIndex] = useState<any>();
 
+
+  const onBookSeat =  async () => {
+    if (
+      selectedSeatArray.length !== 0 &&
+      timeArray[selectedTimeIndex] !== undefined &&
+      dateArray[selectedDateIndex] !== undefined
+    ) {
+      try {
+        await EncryptedStorage.setItem(
+          'ticket',
+          JSON.stringify({
+            seatArray: selectedSeatArray,
+            time: timeArray[selectedTimeIndex],
+            date: dateArray[selectedDateIndex],
+            ticketImage: route.params.PosterImage,
+          }),
+        );
+      } catch (error) {
+        console.error(
+          'Something went Wrong while storing in BookSeats Functions',
+          error,
+        );
+      }
+      navigation.navigate('Ticket', {
+        seatArray: selectedSeatArray,
+        time: timeArray[selectedTimeIndex],
+        date: dateArray[selectedDateIndex],
+        ticketImage: route.params.PosterImage,
+      });
+    } else {
+      ToastAndroid.showWithGravity(
+        'Please Select Seats, Date and Time of the Show',
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM,
+      );
+    }
+  };
   const selectedSeat =(index: number, subIndex: number, num: number) =>{
     if (!twoDSeatArray[index][subIndex].taken) {
       let array: any = [...selectedSeatArray];
@@ -110,7 +148,7 @@ const SeatBookingScreen = ({navigation, route}: any) => {
             style={styles.linearGradient}>
             <View style={styles.appHeaderContainer}>
               <AppHeader
-                name="close"
+                name="arrow-back-outline"
                 header={''}
                 action={() => navigation.goBack()}
               />
@@ -198,13 +236,44 @@ const SeatBookingScreen = ({navigation, route}: any) => {
           }}
         />
       </View>
+
+      <View style={styles.OutterContainer}>
+        <FlatList
+          data={timeArray}
+          keyExtractor={item => item}
+          horizontal
+          bounces={false}
+          contentContainerStyle={styles.containerGap24}
+          renderItem={({item, index}) => {
+            return (
+              <TouchableOpacity onPress={() => setSelectedTimeIndex(index)}>
+                <View
+                  style={[
+                    styles.timeContainer,
+                    index == 0
+                      ? {marginLeft: SPACING.space_24}
+                      : index == dateArray.length - 1
+                      ? {marginRight: SPACING.space_24}
+                      : {},
+                    index == selectedTimeIndex
+                      ? {backgroundColor: COLORS.Orange}
+                      : {},
+                  ]}>
+                  <Text style={styles.timeText}>{item}</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </View>
+
       <View style={styles.buttonPriceContainer}>
         <View style={styles.priceContainer}>
           <Text style={styles.totalPriceText}>Total Price</Text>
           <Text style={styles.price}>$ {price}.00</Text>
         </View>
         <TouchableOpacity 
-          // onPress={BookSeats}
+          // onPress={onBookSeat}
         >
           <Text style={styles.buttonText}>Buy Tickets</Text>
         </TouchableOpacity>
