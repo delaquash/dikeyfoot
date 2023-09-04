@@ -6,6 +6,7 @@ import TabNavigator from "./src/navigation/TabNavigation";
 import MovieDetailsScreen from "./src/screen/MovieDetailsScreen";
 import SeatBookingScreen from "./src/screen/SeatBookingScreen";
 import { useFonts } from 'expo-font';
+import { RootSiblingParent } from 'react-native-root-siblings'
 import * as SplashScreen from 'expo-splash-screen';
 
 
@@ -36,25 +37,28 @@ const App = () => {
     return null;
   }
   return (
+    <RootSiblingParent>
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen 
-          name="Tab" 
-          component={TabNavigator}
-          options={{ animation: "default"}} 
-        />
-        <Stack.Screen 
-          name="Movie Details" 
-          component={MovieDetailsScreen} 
-          options={{ animation: "slide_from_right"}}
-        />
-        <Stack.Screen 
-          name="Seat Booking" 
-          component={SeatBookingScreen} 
-          options={{ animation: "slide_from_bottom"}}
-        />
+        
+          <Stack.Screen 
+              name="Tab" 
+              component={TabNavigator}
+              options={{ animation: "default"}} 
+            />
+            <Stack.Screen 
+              name="Movie Details" 
+              component={MovieDetailsScreen} 
+              options={{ animation: "slide_from_right"}}
+            />
+            <Stack.Screen 
+              name="Seat Booking" 
+              component={SeatBookingScreen} 
+              options={{ animation: "slide_from_bottom"}}
+            />
       </Stack.Navigator>
     </NavigationContainer>
+    </RootSiblingParent>
   );
 };
 // }

@@ -1,4 +1,4 @@
-import { ImageBackground, ScrollView, StyleSheet, Text, View,ToastAndroid } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native';
 import React, { useState } from 'react';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../../theme/theme';
 import { StatusBar } from 'expo-status-bar';
@@ -8,7 +8,9 @@ import { TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomIcon from '../components/CustomIcon';
 import { FlatList } from 'react-native';
-// import EncryptedStorage from "react-native-encrypted-storage"
+import * as SecureStore from 'expo-secure-store';
+import Toast from 'react-native-root-toast';
+
 
 const timeArray: string[] = [
   '10:30',
@@ -83,7 +85,7 @@ const SeatBookingScreen = ({navigation, route}: any) => {
       dateArray[selectedDateIndex] !== undefined
     ) {
       try {
-        await EncryptedStorage.setItem(
+        await SecureStore.setItemAsync(
           'ticket',
           JSON.stringify({
             seatArray: selectedSeatArray,
@@ -105,11 +107,10 @@ const SeatBookingScreen = ({navigation, route}: any) => {
         ticketImage: route.params.PosterImage,
       });
     } else {
-      ToastAndroid.showWithGravity(
-        'Please Select Seats, Date and Time of the Show',
-        ToastAndroid.SHORT,
-        ToastAndroid.BOTTOM,
-      );
+      Toast.show(
+        'Please Select Seats, Date and Time of the Show',{
+          duration: Toast.durations.SHORT
+        });
     }
   };
   const selectedSeat =(index: number, subIndex: number, num: number) =>{
@@ -270,10 +271,10 @@ const SeatBookingScreen = ({navigation, route}: any) => {
       <View style={styles.buttonPriceContainer}>
         <View style={styles.priceContainer}>
           <Text style={styles.totalPriceText}>Total Price</Text>
-          <Text style={styles.price}>$ {price}.00</Text>
+          <Text style={styles.price}>₦{price}00.00</Text>
         </View>
         <TouchableOpacity 
-          // onPress={onBookSeat}
+          onPress={onBookSeat}
         >
           <Text style={styles.buttonText}>Buy Tickets</Text>
         </TouchableOpacity>
